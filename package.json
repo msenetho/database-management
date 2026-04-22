@@ -1,7 +1,7 @@
 {
   "name": "main-code",
   "version": "1.0.0",
-  "main": "db.js",
+  "main": "website.js",
   "scripts": {
     "start": "node website.js",
     "test": "echo \"Error: no test specified\" && exit 1"
