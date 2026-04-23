@@ -83,3 +83,5 @@ INSERT INTO MERCHANDISE (ARTIST_ID, CONCERT_ID, ITEM_NAME, MERCH_PRICE, QUANTITY
 (2, 2, 'cookbook', 49.99, 2),
 (3, 3, 'poster', 14.99, 10),
 (4, 4, 'hat', 29.99, 6);
+
+-- postgresql://postgres.sqdqcyzubfjsmekghnol:WCl2dKOFLLWgNvti@aws-1-us-west-2.pooler.supabase.com:5432/postgres
