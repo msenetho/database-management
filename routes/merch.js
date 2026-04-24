@@ -3,12 +3,12 @@ const router = express.Router()
 const pool = require('../db')
 
 router.get('/merch-revenue', async (req, res) => {
-    const[revenue] = await pool.query(`
-        SELECT ARTIST.ARTIST_NAME, CONCERT.VENUE_NAME, SUM(MERCH_PRICE * QUANTITY_SOLD) AS TOTAL_REVENUE
-        FROM MERCHANDISE
-        JOIN CONCERT ON CONCERT.CONCERT_ID = MERCHANDISE.CONCERT_ID
-        JOIN ARTIST ON ARTIST.ARTIST_ID = MERCHANDISE.ARTIST_ID
-        GROUP BY ARTIST.ARTIST_NAME, CONCERT.VENUE_NAME
+    const { rows: revenue } = await pool.query(`
+        SELECT artist.artist_name, concert.venue_name, SUM(merch_price * quantity_sold) AS total_revenue
+        FROM merchandise
+        JOIN concert ON concert.concert_id = merchandise.concert_id
+        JOIN artist ON artist.artist_id = merchandise.artist_id
+        GROUP BY artist.artist_name, concert.venue_name
     `)
 
     res.send(`
@@ -29,17 +29,17 @@ router.get('/merch-revenue', async (req, res) => {
             <body>
                 ${revenue.length > 0 ? `
                     <h3> Merch Revenue Per Artist</h3>
-                    <table border= "1">
+                    <table border="1">
                         <tr>
                             <th>Artist</th>
                             <th>Venue</th>
                             <th>Total Revenue</th>
                         </tr>
-                        ${revenue.map(revenue => `
+                        ${revenue.map(row => `
                             <tr>
-                                <td>${revenue.ARTIST_NAME}</td>
-                                <td>${revenue.VENUE_NAME}</td>
-                                <td>${revenue.TOTAL_REVENUE}</td>
+                                <td>${row.artist_name}</td>
+                                <td>${row.venue_name}</td>
+                                <td>${row.total_revenue}</td>
                             </tr>
                         `).join('')}
                     </table>

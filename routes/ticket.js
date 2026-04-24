@@ -3,8 +3,8 @@ const router = express.Router()
 const pool = require('../db')
 
 router.get('/add-ticket', async (req, res) => {
-    const[concerts] = await pool.query('SELECT CONCERT_ID, VENUE_NAME FROM CONCERT')
-    const[customers] = await pool.query('SELECT CUSTOMER_ID, CUSTOMER_NAME FROM CUSTOMER')
+    const { rows: concerts } = await pool.query('SELECT concert_id, venue_name FROM concert')
+    const { rows: customers } = await pool.query('SELECT customer_id, customer_name FROM customer')
     res.send(`
         <html>
             <head>
@@ -24,26 +24,26 @@ router.get('/add-ticket', async (req, res) => {
                 </style>
             </head>
             <body>
-                <form action= "/add-ticket" method= "POST">
+                <form action="/add-ticket" method="POST">
                     <label for="concert_id">Select Concert:</label><br>
                     <select id="concert_id" name="concert_id" required>
                         ${concerts.map(concert =>
-                            `<option value="${concert.CONCERT_ID}">${concert.VENUE_NAME}</option>`
+                            `<option value="${concert.concert_id}">${concert.venue_name}</option>`
                         ).join(' ')}
                     </select><br><br>
 
                     <label for="customer_id">Select Customer:</label><br>
                     <select id="customer_id" name="customer_id" required>
                         ${customers.map(customer =>
-                            `<option value="${customer.CUSTOMER_ID}">${customer.CUSTOMER_NAME}</option>`
+                            `<option value="${customer.customer_id}">${customer.customer_name}</option>`
                         ).join(' ')}
                     </select><br><br>
 
-                    <label for= "seat_number">Seat Number:</label><br>
-                    <input type= "number" id= "seat_number" name= "seat_number" required><br><br>
+                    <label for="seat_number">Seat Number:</label><br>
+                    <input type="number" id="seat_number" name="seat_number" required><br><br>
 
-                    <label for= "price">Price:</label><br>
-                    <input type= "number" step= "0.01" min= "0" id= "price" name= "price" required><br><br>
+                    <label for="price">Price:</label><br>
+                    <input type="number" step="0.01" min="0" id="price" name="price" required><br><br>
 
                     <input type="submit" value="Add Ticket">
                 </form>
@@ -62,9 +62,9 @@ router.post('/add-ticket', async (req, res) => {
     }
 
     try {
-        const[result] = await pool.query(`
-        INSERT INTO TICKET (CONCERT_ID, CUSTOMER_ID, SEAT_NUMBER, PRICE)
-        VALUES (?, ?, ?, ?)`, 
+        await pool.query(`
+        INSERT INTO ticket (concert_id, customer_id, seat_number, price)
+        VALUES ($1, $2, $3, $4)`, 
         [concert_id, customer_id, seat_number, price])
 
         res.send(`
@@ -95,27 +95,29 @@ router.post('/add-ticket', async (req, res) => {
 })
 //------------------------------------------------------------------------------------------
 router.get('/total-spending-per-customer', async (req, res) => {
-    const [customers] = await pool.query(`
-        SELECT CUSTOMER_ID, CUSTOMER_NAME
-        FROM CUSTOMER
+    const { rows: customers } = await pool.query(`
+        SELECT customer_id, customer_name
+        FROM customer
     `)
 
     let tickets = []
     if (req.query.customer_id) {
-        [tickets] = await pool.query(`
-            SELECT CUSTOMER.CUSTOMER_ID, CUSTOMER.CUSTOMER_NAME, SUM(TICKET.PRICE) AS TOTAL_SPENT
-            FROM TICKET
-            JOIN CUSTOMER ON CUSTOMER.CUSTOMER_ID = TICKET.CUSTOMER_ID
-            WHERE TICKET.CUSTOMER_ID = ?
-            GROUP BY CUSTOMER.CUSTOMER_ID, CUSTOMER.CUSTOMER_NAME
+        const { rows } = await pool.query(`
+            SELECT customer.customer_id, customer.customer_name, SUM(ticket.price) AS total_spent
+            FROM ticket
+            JOIN customer ON customer.customer_id = ticket.customer_id
+            WHERE ticket.customer_id = $1
+            GROUP BY customer.customer_id, customer.customer_name
         `, [req.query.customer_id])
+        tickets = rows
     } else {
-        [tickets] = await pool.query(`
-            SELECT CUSTOMER.CUSTOMER_ID, CUSTOMER.CUSTOMER_NAME, SUM(TICKET.PRICE) AS TOTAL_SPENT
-            FROM TICKET
-            JOIN CUSTOMER ON CUSTOMER.CUSTOMER_ID = TICKET.CUSTOMER_ID
-            GROUP BY CUSTOMER.CUSTOMER_ID, CUSTOMER.CUSTOMER_NAME
+        const { rows } = await pool.query(`
+            SELECT customer.customer_id, customer.customer_name, SUM(ticket.price) AS total_spent
+            FROM ticket
+            JOIN customer ON customer.customer_id = ticket.customer_id
+            GROUP BY customer.customer_id, customer.customer_name
         `)
+        tickets = rows
     }
 
     res.send(`
@@ -134,29 +136,29 @@ router.get('/total-spending-per-customer', async (req, res) => {
                 </style>
             </head>
             <body>
-            <form action="/total-spending-per-customer" method= "GET">
-                    <label for= "customer_id">Select Customer:</label><br>
-                        <select id= "customer_id" name= "customer_id">
+            <form action="/total-spending-per-customer" method="GET">
+                    <label for="customer_id">Select Customer:</label><br>
+                        <select id="customer_id" name="customer_id">
                             <option value="" selected>--All Customers--</option>
-                            ${customers.map(customers =>
-                                `<option value="${customers.CUSTOMER_ID}">${customers.CUSTOMER_NAME}</option>`
+                            ${customers.map(customer =>
+                                `<option value="${customer.customer_id}">${customer.customer_name}</option>`
                             ).join('')}
                         </select><br><br>
-                    <input type= "submit" value= "View Prices">
+                    <input type="submit" value="View Prices">
                 </form>
                 ${tickets.length > 0 ? `
-                    <h3>${req.query.customer_id ? `Total spent by ${tickets[0].CUSTOMER_NAME}` : 'Total spent by All Customers'}</h3>
-                    <table border= "1">
+                    <h3>${req.query.customer_id ? `Total spent by ${tickets[0].customer_name}` : 'Total spent by All Customers'}</h3>
+                    <table border="1">
                         <tr>
                             <th>Customer ID</th>
                             <th>Customer Name</th>
                             <th>Total Spent</th>
                         </tr>
-                        ${tickets.map(tickets => `
+                        ${tickets.map(ticket => `
                             <tr>
-                                <td>${tickets.CUSTOMER_ID}</td>
-                                <td>${tickets.CUSTOMER_NAME}</td>
-                                <td>${tickets.TOTAL_SPENT}</td>
+                                <td>${ticket.customer_id}</td>
+                                <td>${ticket.customer_name}</td>
+                                <td>${ticket.total_spent}</td>
                             </tr>
                             `).join('')}
                     </table>    
@@ -168,13 +170,13 @@ router.get('/total-spending-per-customer', async (req, res) => {
 })
 //------------------------------------------------------------------------------------------
 router.get('/top-artists', async (req, res) => {
-    const [topArtists] = await pool.query(`
-        SELECT ARTIST.ARTIST_NAME, SUM(TICKET.PRICE) AS TOTAL_SPENT
-        FROM TICKET
-        JOIN CONCERT ON CONCERT.CONCERT_ID = TICKET.CONCERT_ID
-        JOIN ARTIST ON ARTIST.ARTIST_ID = CONCERT.ARTIST_ID
-        GROUP BY ARTIST.ARTIST_ID, ARTIST.ARTIST_NAME
-        ORDER BY TOTAL_SPENT DESC
+    const { rows: topArtists } = await pool.query(`
+        SELECT artist.artist_name, SUM(ticket.price) AS total_spent
+        FROM ticket
+        JOIN concert ON concert.concert_id = ticket.concert_id
+        JOIN artist ON artist.artist_id = concert.artist_id
+        GROUP BY artist.artist_id, artist.artist_name
+        ORDER BY total_spent DESC
         LIMIT 3
     `)
 
@@ -196,15 +198,15 @@ router.get('/top-artists', async (req, res) => {
             <body>
                 ${topArtists.length > 0 ? `
                     <h3>Top 3 Artists Based on Revenue</h3>
-                    <table border= "1">
+                    <table border="1">
                         <tr>
                             <th>Artist Name</th>
                             <th>Total Revenue</th>
                         </tr>
-                        ${topArtists.map(topArtists => `
+                        ${topArtists.map(artist => `
                             <tr>
-                                <td>${topArtists.ARTIST_NAME}</td>
-                                <td>${topArtists.TOTAL_SPENT}</td>
+                                <td>${artist.artist_name}</td>
+                                <td>${artist.total_spent}</td>
                             </tr>
                             `).join('')}
                     </table>    

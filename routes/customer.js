@@ -20,12 +20,12 @@ router.get('/add-customer', (req, res) => {
                 </style>
             </head>
             <body>
-                <form action= "/add-customer" method= "POST">
-                    <label for= "customer_name">Customer Name:</label><br>
-                    <input type= "text" id= "customer_name" name="customer_name"><br><br>
-                    <input type= "submit" value= "Add Customer">
+                <form action="/add-customer" method="POST">
+                    <label for="customer_name">Customer Name:</label><br>
+                    <input type="text" id="customer_name" name="customer_name"><br><br>
+                    <input type="submit" value="Add Customer">
                 </form>
-                <a href= "/" class= "nav-link">Back to Home</a>
+                <a href="/" class="nav-link">Back to Home</a>
             </body>
         </html>
     `)
@@ -34,7 +34,7 @@ router.get('/add-customer', (req, res) => {
 //POST
 router.post('/add-customer', async (req, res) => {
     const customer_name = req.body.customer_name
-    await pool.query('INSERT INTO CUSTOMER (CUSTOMER_NAME) VALUES (?)', [customer_name])
+    await pool.query('INSERT INTO customer (customer_name) VALUES ($1)', [customer_name])
     res.send(`
         <html>
             <head>

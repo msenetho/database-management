@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const PORT = 3000
 
 const pool = require('./db')
 
@@ -55,7 +54,3 @@ app.use('/', ticketRoute)
 
 const merchRoute = require('./routes/merch')
 app.use('/', merchRoute)
-
-app.listen(PORT, () => {
-    console.log(`Music Database listening on port ${PORT}`)
-})

@@ -3,7 +3,9 @@ const router = express.Router()
 const pool = require('../db')
 
 router.get('/add-concert', async (req, res) => {
-    const [artists] = await pool.query('SELECT ARTIST_ID, ARTIST_NAME FROM ARTIST')
+    const { rows: artists } = await pool.query(`
+        SELECT artist_id, artist_name
+        FROM artist`)
     res.send(`
         <html>
             <head>
@@ -23,27 +25,27 @@ router.get('/add-concert', async (req, res) => {
                 </style>
             </head>
             <body>
-                <form action= "/add-concert" method= "POST">
-                    <label for= "venue_name">Venue Name:</label><br>
-                        <input type= "text" id= "venue_name" name= "venue_name" required><br><br>
+                <form action="/add-concert" method="POST">
+                    <label for="venue_name">Venue Name:</label><br>
+                        <input type="text" id="venue_name" name="venue_name" required><br><br>
                     
-                    <label for= "city">City:</label><br>
-                        <input type= "text" id= "city" name= "city" required><br><br>
+                    <label for="city">City:</label><br>
+                        <input type="text" id="city" name="city" required><br><br>
 
-                    <label for= "concert_date">Concert Date:</label><br>
-                        <input type= "date" id= "concert_date" name= "concert_date" required><br><br>
+                    <label for="concert_date">Concert Date:</label><br>
+                        <input type="date" id="concert_date" name="concert_date" required><br><br>
 
-                    <label for= "artist_id">Select Artist:</label><br>
-                        <select id= "artist_id" name= "artist_id" required>
+                    <label for="artist_id">Select Artist:</label><br>
+                        <select id="artist_id" name="artist_id" required>
                             <option value="" disabled selected>--Select an Artist--</option>
                             ${artists.map(artist =>
-                                `<option value="${artist.ARTIST_ID}">${artist.ARTIST_NAME}</option>`
+                                `<option value="${artist.artist_id}">${artist.artist_name}</option>`
                             ).join('')}
                         </select><br><br>
                     
                     <input type="submit" value="Add Concert">
                 </form>
-                <a href= "/" class= "nav-link">Back to Home</a>
+                <a href="/" class="nav-link">Back to Home</a>
             </body>
         </html>
     `)
@@ -57,8 +59,9 @@ router.post('/add-concert', async (req, res) => {
     }
 
     try {
-        const[result] = await pool.query(`INSERT INTO CONCERT (VENUE_NAME, CITY, CONCERT_DATE, ARTIST_ID) 
-            VALUES (?, ?, ?, ?)`,
+        await pool.query(`
+            INSERT INTO concert (venue_name, city, concert_date, artist_id) 
+            VALUES ($1, $2, $3, $4)`,
             [venue_name, city, concert_date, artist_id]
         )
 
@@ -90,14 +93,17 @@ router.post('/add-concert', async (req, res) => {
 })
 // ------------------------------------------------------------------------------------------
 router.get('/view-concerts', async (req, res) => {
-    const [concert_cities] = await pool.query('SELECT DISTINCT CITY FROM CONCERT')
+    const { rows: concert_cities} = await pool.query(`
+        SELECT DISTINCT city
+        FROM concert`)
     let concerts = []
 
     if (req.query.city) {
-        [concerts] = await pool.query(`
-        SELECT * FROM CONCERT
-        WHERE CITY = ?
-        `, [req.query.city])
+        const { rows } = await pool.query(`
+            SELECT * FROM concert
+            WHERE city = $1`,
+            [req.query.city])
+        concerts = rows
     }
 
     res.send(`
@@ -116,19 +122,19 @@ router.get('/view-concerts', async (req, res) => {
                 </style>
             </head>
             <body>
-                <form action= "/view-concerts" method= "GET">
-                    <label for= "city">Select City:</label><br>
-                        <select id= "city" name= "city" required>
+                <form action="/view-concerts" method="GET">
+                    <label for="city">Select City:</label><br>
+                        <select id="city" name="city" required>
                             <option value="" disabled selected>--Select a City--</option>
-                            ${concert_cities.map(cities =>
-                                `<option value="${cities.CITY}">${cities.CITY}</option>`
+                            ${concert_cities.map(city =>
+                                `<option value="${city.city}">${city.city}</option>`
                             ).join('')}
                         </select><br><br>
-                    <input type= "submit" value= "View Concerts">
+                    <input type="submit" value="View Concerts">
                 </form>
                 ${concerts.length > 0 ? `
                     <h3>Concerts in ${req.query.city}</h3>
-                    <table border= "1">
+                    <table border="1">
                         <tr>
                             <th>Concert ID</th>
                             <th>Venue</th>
@@ -137,10 +143,10 @@ router.get('/view-concerts', async (req, res) => {
                         </tr>
                         ${concerts.map(concert => `
                             <tr>
-                                <td>${concert.CONCERT_ID}</td>
-                                <td>${concert.VENUE_NAME}</td>
-                                <td>${concert.CITY}</td>
-                                <td>${concert.CONCERT_DATE}</td>
+                                <td>${concert.concert_id}</td>
+                                <td>${concert.venue_name}</td>
+                                <td>${concert.city}</td>
+                                <td>${concert.concert_date}</td>
                             </tr>
                             `).join('')}
                     </table>    
@@ -152,18 +158,19 @@ router.get('/view-concerts', async (req, res) => {
 })
 //------------------------------------------------------------------------------------------
 router.get('/view-concert-from-artist', async (req, res) => {
-    const [artists] = await pool.query(`
-        SELECT ARTIST_ID, ARTIST_NAME
-        FROM ARTIST
+    const { rows: artists } = await pool.query(`
+        SELECT artist_id, artist_name
+        FROM artist
     `)
 
     let concerts = []
     if (req.query.artist_id) {
-        [concerts] = await pool.query(`
-            SELECT * FROM CONCERT
-            JOIN ARTIST ON CONCERT.ARTIST_ID = ARTIST.ARTIST_ID
-            WHERE ARTIST.ARTIST_ID = ?
+        const { rows } = await pool.query(`
+            SELECT * FROM concert
+            JOIN artist ON concert.artist_id = artist.artist_id
+            WHERE artist.artist_id = $1
         `, [req.query.artist_id])
+        concerts = rows
     }
 
     res.send(`
@@ -182,19 +189,19 @@ router.get('/view-concert-from-artist', async (req, res) => {
                 </style>
             </head>
             <body>
-                <form action="/view-concert-from-artist" method= "GET">
-                    <label for= "artist_id">Select Artist:</label><br>
-                        <select id= "artist_id" name= "artist_id" required>
+                <form action="/view-concert-from-artist" method="GET">
+                    <label for="artist_id">Select Artist:</label><br>
+                        <select id="artist_id" name="artist_id" required>
                             <option value="" disabled selected>--Select an Artist--</option>
-                            ${artists.map(artists =>
-                                `<option value="${artists.ARTIST_ID}">${artists.ARTIST_NAME}</option>`
+                            ${artists.map(artist =>
+                                `<option value="${artist.artist_id}">${artist.artist_name}</option>`
                             ).join('')}
                         </select><br><br>
-                    <input type= "submit" value= "View Concerts">
+                    <input type="submit" value="View Concerts">
                 </form>
                 ${concerts.length > 0 ? `
-                    <h3>Concerts for ${concerts[0].ARTIST_NAME}</h3>
-                    <table border= "1">
+                    <h3>Concerts for ${concerts[0].artist_name}</h3>
+                    <table border="1">
                         <tr>
                             <th>Artist Name</th>
                             <th>Venue</th>
@@ -203,10 +210,10 @@ router.get('/view-concert-from-artist', async (req, res) => {
                         </tr>
                         ${concerts.map(concert => `
                             <tr>
-                                <td>${concert.ARTIST_NAME}</td>
-                                <td>${concert.VENUE_NAME}</td>
-                                <td>${concert.CITY}</td>
-                                <td>${concert.CONCERT_DATE}</td>
+                                <td>${concert.artist_name}</td>
+                                <td>${concert.venue_name}</td>
+                                <td>${concert.city}</td>
+                                <td>${concert.concert_date}</td>
                             </tr>
                             `).join('')}
                     </table>    
