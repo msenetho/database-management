@@ -60,7 +60,27 @@ router.post('/add-concert', async (req, res) => {
 
     if (!venue_name || !city || !concert_date || !artist_id) {
         console.log('Validation error: One or more fields are empty')
-        return res.redirect('/add-concert?error=missing')
+        return res.status(400).send(`
+            <html>
+                <head>
+                    <style>
+                        body {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            margin: 0;
+                            font-family: Arial, sans-serif;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>Error: All concert fields are required.</h2>
+                    <a href='/add-concert'>Back to Add Concert</a>
+                </body>
+            </html>
+        `)
     }
 
     try {
@@ -73,24 +93,24 @@ router.post('/add-concert', async (req, res) => {
         res.send(`
             <html>
                 <head>
-                <style>
-                    body {
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        min-height: 100vh;
-                        margin: 0;
-                        font-family: Arial, sans-serif;
-                    }
-                </style>
-            </head>
+                    <style>
+                        body {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            margin: 0;
+                            font-family: Arial, sans-serif;
+                        }
+                    </style>
+                </head>
                 <body>
                     <h2>Concert added successfully.</h2>
                     <a href='/'>Back to Home</a>
                 </body>
             </html>
-            `)
+        `)
     } catch (err) {
         console.error(err)
         res.status(500).send('Database error.')
