@@ -3,52 +3,57 @@ const router = express.Router()
 const pool = require('../db')
 
 router.get('/add-concert', async (req, res) => {
-    const { rows: artists } = await pool.query(`
-        SELECT artist_id, artist_name
-        FROM artist`)
-    res.send(`
-        <html>
-            <head>
-                <style>
-                    .error-input { border: 2px solid red; }
-                    .error-text { color: red; font-size: 0.8em; }
-                    .nav-link { margin-top: 20px; display: block; }
-                    body {
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        min-height: 100vh;
-                        margin: 0;
-                        font-family: Arial, sans-serif;
-                    }
-                </style>
-            </head>
-            <body>
-                <form action="/add-concert" method="POST">
-                    <label for="venue_name">Venue Name:</label><br>
-                        <input type="text" id="venue_name" name="venue_name" required><br><br>
-                    
-                    <label for="city">City:</label><br>
-                        <input type="text" id="city" name="city" required><br><br>
+    try {
+        const { rows: artists } = await pool.query(`
+            SELECT artist_id, artist_name
+            FROM artist`)
+        res.send(`
+            <html>
+                <head>
+                    <style>
+                        .error-input { border: 2px solid red; }
+                        .error-text { color: red; font-size: 0.8em; }
+                        .nav-link { margin-top: 20px; display: block; }
+                        body {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            margin: 0;
+                            font-family: Arial, sans-serif;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <form action="/add-concert" method="POST">
+                        <label for="venue_name">Venue Name:</label><br>
+                            <input type="text" id="venue_name" name="venue_name" required><br><br>
+                        
+                        <label for="city">City:</label><br>
+                            <input type="text" id="city" name="city" required><br><br>
 
-                    <label for="concert_date">Concert Date:</label><br>
-                        <input type="date" id="concert_date" name="concert_date" required><br><br>
+                        <label for="concert_date">Concert Date:</label><br>
+                            <input type="date" id="concert_date" name="concert_date" required><br><br>
 
-                    <label for="artist_id">Select Artist:</label><br>
-                        <select id="artist_id" name="artist_id" required>
-                            <option value="" disabled selected>--Select an Artist--</option>
-                            ${artists.map(artist =>
-                                `<option value="${artist.artist_id}">${artist.artist_name}</option>`
-                            ).join('')}
-                        </select><br><br>
-                    
-                    <input type="submit" value="Add Concert">
-                </form>
-                <a href="/" class="nav-link">Back to Home</a>
-            </body>
-        </html>
-    `)
+                        <label for="artist_id">Select Artist:</label><br>
+                            <select id="artist_id" name="artist_id" required>
+                                <option value="" disabled selected>--Select an Artist--</option>
+                                ${artists.map(artist =>
+                                    `<option value="${artist.artist_id}">${artist.artist_name}</option>`
+                                ).join('')}
+                            </select><br><br>
+                        
+                        <input type="submit" value="Add Concert">
+                    </form>
+                    <a href="/" class="nav-link">Back to Home</a>
+                </body>
+            </html>
+        `)
+    } catch (err) {
+        console.error(err)
+        res.status(500).send('Database error.')
+    }
 })
 router.post('/add-concert', async (req, res) => {
     const { venue_name, city, concert_date, artist_id } = req.body
