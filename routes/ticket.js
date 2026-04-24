@@ -58,7 +58,27 @@ router.post('/add-ticket', async (req, res) => {
 
     if (!concert_id || !customer_id || !seat_number || !price) {
         console.log('Validation error: One or more fields are empty')
-        return res.redirect('/add-ticket?error=missing')
+        return res.status(400).send(`
+            <html>
+                <head>
+                    <style>
+                        body {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            margin: 0;
+                            font-family: Arial, sans-serif;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>Error: All ticket fields are required.</h2>
+                    <a href='/add-ticket'>Back to Add Ticket</a>
+                </body>
+            </html>    
+        `)
     }
 
     try {
