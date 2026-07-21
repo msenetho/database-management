@@ -2,7 +2,7 @@
 
 A full-stack web application for managing concert information, ticket sales, customers, and merchandise. The project demonstrates relational database design, SQL query development, and deployment of a Node.js web application backed by PostgreSQL.
 
-**Live Demo:** https://database-management-o7tw.onrender.com
+** WEBSITE IS NO LONGER ACTIVE, REFER TO SCREENSHOTS FOR EXAMPLES **
 
 ---
 
