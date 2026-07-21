@@ -1,5 +1,12 @@
 # Concert Database Management System
 
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
 A full-stack web application for managing concert information, ticket sales, customers, and merchandise. The project demonstrates relational database design, SQL query development, and deployment of a Node.js web application backed by PostgreSQL.
 
 ** WEBSITE IS NO LONGER ACTIVE, REFER TO SCREENSHOTS FOR EXAMPLES **
