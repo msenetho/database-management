@@ -4,11 +4,12 @@
 
 *A full-stack web application for managing concerts, ticket sales, customers, and merchandise using PostgreSQL.*
 
-![Language](https://img.shields.io/github/languages/top/msenetho/database-management)
-![Repo Size](https://img.shields.io/github/repo-size/msenetho/database-management)
-![Last Commit](https://img.shields.io/github/last-commit/msenetho/database-management)
-![Issues](https://img.shields.io/github/issues/msenetho/database-management)
-![License](https://img.shields.io/github/license/msenetho/database-management)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-Framework-000000?style=for-the-badge&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 
 </div>
 
