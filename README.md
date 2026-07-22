@@ -1,23 +1,30 @@
+<div align="center">
+
 # Concert Database Management System
 
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
-![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+*A full-stack web application for managing concerts, ticket sales, customers, and merchandise using PostgreSQL.*
 
-A full-stack web application for managing concert information, ticket sales, customers, and merchandise. The project demonstrates relational database design, SQL query development, and deployment of a Node.js web application backed by PostgreSQL.
+![Language](https://img.shields.io/github/languages/top/msenetho/database-management)
+![Repo Size](https://img.shields.io/github/repo-size/msenetho/database-management)
+![Last Commit](https://img.shields.io/github/last-commit/msenetho/database-management)
+![Issues](https://img.shields.io/github/issues/msenetho/database-management)
+![License](https://img.shields.io/github/license/msenetho/database-management)
 
-** WEBSITE IS NO LONGER ACTIVE, REFER TO SCREENSHOTS FOR EXAMPLES **
+</div>
+
+> **Website Notice**
+>
+> This project is no longer hosted online. Please refer to the screenshots below for examples of the application's interface and functionality.
 
 ---
 
 ## Overview
 
-This application was developed as part of **CSCE 45203 – Database Management Systems** at the University of Arkansas.
+This application was developed as part of **CSCE 45203 – Database Management Systems** at the **University of Arkansas**.
 
-The system allows users to manage artists, concerts, customers, ticket purchases, and merchandise through a web interface while demonstrating concepts such as:
+The system provides a web interface for managing artists, concerts, customers, ticket purchases, and merchandise while demonstrating fundamental database concepts including relational modeling, SQL query development, and full-stack web application design.
+
+Key concepts demonstrated include:
 
 - Relational database design
 - Primary and foreign keys
@@ -30,14 +37,14 @@ The system allows users to manage artists, concerts, customers, ticket purchases
 
 ## Features
 
-### Data Entry
+### Data Management
 
 - Add new artists
 - Add new concerts
-- Add customers
-- Add ticket purchases
+- Register customers
+- Record ticket purchases
 
-### Database Queries
+### Reports & Queries
 
 - View concerts by city
 - View concerts by artist
@@ -67,7 +74,7 @@ The system allows users to manage artists, concerts, customers, ticket purchases
 - PostgreSQL
 - Supabase
 
-### Hosting
+### Deployment
 
 - Render
 
@@ -75,7 +82,7 @@ The system allows users to manage artists, concerts, customers, ticket purchases
 
 ## Database Design
 
-The database consists of five related tables:
+The application is built around a relational database consisting of five primary tables:
 
 - Artist
 - Concert
@@ -83,11 +90,9 @@ The database consists of five related tables:
 - Ticket
 - Merchandise
 
-Relationships are enforced using foreign keys with cascading deletes where appropriate.
+Relationships are enforced using primary and foreign keys with cascading deletes where appropriate.
 
-Example:
-
-```
+```text
 Artist
    │
    ├────────── Concert
@@ -99,7 +104,7 @@ Artist
 
 ---
 
-## Example SQL Concepts Demonstrated
+## SQL Concepts Demonstrated
 
 - INSERT statements
 - INNER JOIN
@@ -113,39 +118,39 @@ Artist
 
 ---
 
-# Screenshots
+## Screenshots (TBD)
 
-## Home Page
-
-*Insert screenshot here*
-
----
-
-## Add Artist
+### Home Page
 
 *Insert screenshot here*
 
 ---
 
-## Add Concert
+### Add Artist
 
 *Insert screenshot here*
 
 ---
 
-## Customer Spending Report
+### Add Concert
 
 *Insert screenshot here*
 
 ---
 
-## Top 3 Artists
+### Customer Spending Report
 
 *Insert screenshot here*
 
 ---
 
-## Merchandise Revenue
+### Top 3 Artists
+
+*Insert screenshot here*
+
+---
+
+### Merchandise Revenue
 
 *Insert screenshot here*
 
@@ -159,7 +164,7 @@ Clone the repository.
 git clone https://github.com/msenetho/database-management.git
 ```
 
-Move into the project.
+Navigate to the project directory.
 
 ```bash
 cd database-management
@@ -185,9 +190,9 @@ Start the application.
 npm start
 ```
 
-The application will be available at
+The application will be available at:
 
-```
+```text
 http://localhost:3000
 ```
 
@@ -195,7 +200,7 @@ http://localhost:3000
 
 ## Project Structure
 
-```
+```text
 database-management/
 │
 ├── public/
@@ -207,30 +212,16 @@ database-management/
 └── README.md
 ```
 
----
-
-## Future Improvements
-
-- Improve UI using CSS or a frontend framework
-- User authentication
-- Edit/Delete functionality
-- Pagination for query results
-- Search functionality
-- Dashboard with charts
-- Responsive mobile layout
-
----
-
 ## What I Learned
 
-Through this project I gained experience with:
+This project strengthened my experience with:
 
 - Relational database modeling
 - PostgreSQL
-- SQL query optimization
-- Building REST-style backend logic
-- Connecting a Node.js application to a cloud database
-- Deploying a full-stack application with Render and Supabase
+- SQL query development and optimization
+- Express.js and Node.js backend development
+- Connecting a web application to a cloud-hosted database
+- Deploying full-stack applications with Render and Supabase
 
 ---
 
@@ -238,8 +229,7 @@ Through this project I gained experience with:
 
 **Matthew Senetho**
 
-Computer Science & Computer Engineering
-
+Computer Science & Computer Engineering  
 University of Arkansas
 
 GitHub: https://github.com/msenetho
